@@ -22,6 +22,8 @@ function App(){
 	}
 
 	function handleClick(event){//? Metodo que maneja los clicks de los botones
+		if(isEnd) return;
+
 		const letra = event.target.innerHTML.toLowerCase();
 		let arrayAux = stringDeTabla.split('');
 
@@ -33,12 +35,13 @@ function App(){
 
 		if(stringDeTabla === arrayAux.join('')) setFallos([...fallos , 1]);
 
-		//? Terminar juego
-		isEnd = (!stringDeTabla.includes('0') || fallos.length>=5)? true : false;
-		winner = (isEnd && fallos.length<5)? true : false;
 
 		stringDeTabla = arrayAux.join('');
 		setTablaLetras(arrayAux);
+		
+		//? Terminar juego
+		isEnd = (!stringDeTabla.includes('0') || fallos.length>=4)? true : false;
+		winner = (isEnd && fallos.length<4)? true : false;
 	}
 
 	function handleRestart(){
@@ -76,7 +79,7 @@ function App(){
 			{
 				!onPlay &&
 					<section>
-						<button onClick={comienzoJuego}>Comenzar juego</button>
+						<button id='botonInicio' onClick={comienzoJuego}>Comenzar juego</button>
 					</section>
 			}
 			{
@@ -99,13 +102,16 @@ function App(){
 						}
 						<article className="mostradorWord">
 							{
-								tablaLetras?.map((_ , indice)=>{
-									return(
-										<p className='letraTabla' key={indice}>
-											{stringDeTabla[indice]==='1' && secretWord[indice]}
-										</p>
-									);
-								})
+								(!tablaLetras.length>0)?
+									<h3>Obteniendo palabra</h3>
+								:
+									tablaLetras?.map((_ , indice)=>{
+										return(
+											<p className='letraTabla' key={indice}>
+												{stringDeTabla[indice]==='1' && secretWord[indice]}
+											</p>
+										);
+									})
 							}
 						</article>
 						<article className='teclado'>
