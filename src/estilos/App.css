@@ -17,6 +17,11 @@ html,body,main{
 	box-shadow: inset 0 0 150px white;
 }
 
+h1,h2,h3,h4,h5,h6,p{
+	pointer-events: none;
+	user-select: none;
+}
+
 .ahorcado , .ahorcado>section{
 	display: grid;
 	place-items: center;
@@ -49,7 +54,7 @@ html,body,main{
 	grid-template-columns: repeat(11 , 1fr);
 	gap: 5px;
 
-	width: min(70vw , 600px);
+	width: 500px;
 }
 
 .teclado button{
@@ -75,7 +80,9 @@ html,body,main{
 
 .teclado button:last-child{
 	border-color: green;
-	background-color: lightgreen;
+	box-shadow: inset 0 0 20px lightgreen;
+	background: url("../pictures/Restart_32px.png") no-repeat;
+	background-position: 2.5px -1px;
 }
 
 .teclado button:last-child:hover{
@@ -84,4 +91,9 @@ html,body,main{
 
 .teclado button:last-child:active{
 	box-shadow: inset 0 0 20px lightgreen;
+}
+
+#fallos{
+	color: red;
+	font-size: 3em;
 }

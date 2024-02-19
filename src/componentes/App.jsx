@@ -1,16 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useState , useEffect } from 'react';
+import { Resultado } from './Resultado.jsx';
 import { teclado } from './constantes.mjs';
 import { getRandomWord } from './getRandomWord.mjs';
+import { validarWord } from './validarWord.mjs';
 import '../estilos/App.css'
 
-let stringDeTabla = '';//? Variable que guarda el estado de la tabla
+let stringDeTabla = '',	//? Variable que guarda el estado de la tabla
+    isEnd = false,		//? Variable que dice si ha terminado el juego
+	winner = false;		//? Variable que dice si hay ganador
 
 function App(){
 	const [onPlay , setPlay] = useState(false);
 	const [secretWord , setSecretWord] = useState();
 	const [tablaLetras , setTablaLetras] = useState([]);
+	const [fallos , setFallos] = useState([]);
 
 	function comienzoJuego(){
 		setPlay(true);
@@ -26,19 +31,31 @@ function App(){
 			}
 		}
 
+		if(stringDeTabla === arrayAux.join('')) setFallos([...fallos , 1]);
+
+		//? Terminar juego
+		isEnd = (!stringDeTabla.includes('0') || fallos.length>=5)? true : false;
+		winner = (isEnd && fallos.length<5)? true : false;
+
 		stringDeTabla = arrayAux.join('');
-		setTablaLetras(arrayAux)
+		setTablaLetras(arrayAux);
 	}
 
 	function handleRestart(){
+		stringDeTabla = '';
+		isEnd = false;
+		winner = false;
+		
 		setPlay(false);
+		setFallos([]);
 		setTablaLetras([]);
 		getWord();
 	}
 
 	function getWord(){
 		getRandomWord().then(data => {
-			const word = data.slice(2 , -2).toLowerCase();
+			let word = data.slice(2 , -2).toLowerCase();
+			word = validarWord(word);
 			setSecretWord(word);
 		});
 	}
@@ -66,6 +83,20 @@ function App(){
 				onPlay &&
 				secretWord &&
 					<section>
+						{
+							isEnd &&
+								<Resultado winner={winner} />
+						}
+						{
+							fallos.length>0 &&
+								<p id='fallos'>
+									{
+										fallos?.map((_ , indice)=>{
+											return '×';
+										})
+									}
+								</p>
+						}
 						<article className="mostradorWord">
 							{
 								tablaLetras?.map((_ , indice)=>{
@@ -85,9 +116,7 @@ function App(){
 									);
 								})
 							}
-							<button onClick={handleRestart}>
-								<img src='../pictures/Restart_32px.png' alt='Rs'/>
-							</button>
+							<button onClick={handleRestart}/>
 						</article>
 					</section>
 			}
